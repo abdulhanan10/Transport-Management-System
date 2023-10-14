@@ -2,6 +2,7 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include<cstring>
 #include<iomanip>
 #include <conio.h>
 #include <windows.h>
@@ -15,9 +16,12 @@ using namespace std;
 //#ifndef FINAL_PROJECT
 //#define FINAL_PROJECT
 //#endif
-int assign_ID_to_Customer(char* ptr);
-void savedatatofile(string** data);
-void readandprintdata();
+void menuHranking();
+void saveranking(float score);
+void printHranking();
+int assign_ID_to_Customer(char** ptr);
+void saveDataToFile(char* temp, char* pass);
+void readAndPrintData(char* temp, char* pass);
 class Name {
 private:
 	char* fName;
@@ -80,7 +84,7 @@ private:
 	Name pName;
 	Date DOB;
 	int Age;
-	long long int Nid;
+	int Nid;
 public:
 	//add following functions in this class //Getter, Setters
 	//Destructor, Default and Parametrized Constructor, Copy Constructor, Output
@@ -94,8 +98,8 @@ public:
 	Date getDOB();
 	void setAge(int age);
 	int getAge();
-	void setNID(long long int nid);
-	long long int getNID();
+	void setNID(int nid);
+	int getNID();
 };
 class Customer : public Person {
 private:
@@ -110,36 +114,41 @@ public:
 	//Destructor, Default and Parametrized Constructor, Copy Constructor, Output
 	//operator (print complete information of customer including history if any)
 	Customer();
-	Customer(int custID /*,Service** bookingHist*/);
+	Customer(int custID /*, Service bookingHist*/);
 	~Customer();
 	void setCustID(int custID);
 	int getCustID();
-	/*void setBooingHistory(Service** bookingHist);
-	Service getBooingHistory();*/
+	void input();
+	bool searchforidpassword(string id, string pass);
+	/* void setBooingHistory(Service* bookingHist); */
+	/* void setBooingHistory(Service bookingHist);
+	Service getBooingHistory(); */
+	void customer_list(mTime time_obj[2], Person person_obj[2],  Customer customer_obj[2],
+		Name name_obj[2]);
+	void readcustomerdata();
 };
 class Driver : public Person {
 private:
 	int dId;
-	char** LicencesList;
+	char*** LicencesList;
 	int noofLicences;
 	float overallRanking;
 	float salary;
 	int experience;
 	int status; // 1 for free, 2 if booked and 3 if canceled
-	/*Service** serviceHistory;*/
-	//Add services address in the array for tracking complete information of service.
+	/* Service* serviceHistory; */
+		//Add services address in the array for tracking complete information of service.
 public:
-	//add following functions in this class
-	//Getter, Setters
-	//Destructor, Default and Parameterized Constructor, Copy Constructor, Output
-	//operator (prints complete information of Driver)
+	int licensecount = 0;
+	char fname, lname;
 	Driver();
-	Driver(int driverID, char** licenseList, int noOfLicense, float overallRank, float sal, int exp, int statuses/*, Service** serviceHist*/);
+	Driver(int driverID, char*** licenseList, int noOfLicense, float overallRank, float sal, int exp,
+		int statuses /*, Service serviceHist*/);
 	~Driver();
 	void setDriverID(int driverID);
 	int getDriverID();
-	void setLicenseList(char** licenseList);
-	char** getLicenseList();
+	void setLicenseList(char*** licenseList);
+	char*** getLicenseList();
 	void setNoOFLicenses(int noOfLicense);
 	int getNoOFLicenses();
 	void setOverallRankings(float overallRank);
@@ -150,8 +159,17 @@ public:
 	int getExperience();
 	void setStatus(int statuses);
 	int getStatus();
-	//void setServiceHist(Service** serviceHist);
-	//Service getServiceHist();
+	void driver_list(Driver driver_obj[], Name name_obj[]);
+	void savemultiplelicensetofile(string st, int li);
+	void readdataoflicenseinfile();
+	void printsalary();
+	void updatesalary(int age, int exp, int c, char* ptr);
+	void savesalarytofile(string st, float sal);
+	/*void setServiceHist(Service** serviceHist);
+	Service getServiceHist();*/
+	void savedataofdriverinfile(int driverID,int noOfLicense, float overallRank, float sal, int exp,
+		int statuses);
+	void readdataofdriverinfile();
 };
 class Service {
 private:
@@ -166,17 +184,15 @@ private:
 	int dId; // Driver Id
 	int vId; // vehicle Id
 
-	//you can add more members here if required
-	//add member functions
 public:
 	Service();
 	Service(char* src, char* destn, float dist, Date bkDate,
 		mTime bkTime, bool sts, float fuelRate, int customerID, int driverID, int vehichleID);
 	~Service();
 	void setSource(char* src);
-	char getSource();
+	char* getSource();
 	void setDestination(char* destn);
-	char getDestination();
+	char* getDestination();
 	void setDistance(float dist);
 	float getDistance();
 	void setBookingDate(Date bkDate);
@@ -193,8 +209,8 @@ public:
 	int getDriverID();
 	void setVehicleID(int vehichleID);
 	int getVehicleID();
-	/*void setBooingHistory(Service** bookingHist);
-		Service getBooingHistory();*/
+	/* void setBooingHistory(Service* bookingHist);
+	Service getBooingHistory(); */
 
 };
 class Ride : public Service {
@@ -214,7 +230,7 @@ public:
 	void setNoOfPassengers(int noOfPssngr);
 	int getNoOfPassengers();
 	void setRideType(char* typeOfRide);
-	char getRideType();
+	char* getRideType();
 	void setDriverRanking(float driverRank);
 	float getDriverRanking();
 	void setVehicleRank(float vehicleRank);
@@ -234,7 +250,7 @@ public:
 	void setGoodsWeight(float weightOfGoods);
 	float getGoodsWeight();
 	void setGoodsType(char* typeOfGoods);
-	char getGoodsType();
+	char* getGoodsType();
 };
 class Feature {
 private:
@@ -250,7 +266,7 @@ public:
 	void setFID(int featureID);
 	int getFID();
 	void setDescription(char* desc);
-	char getDescription();
+	char* getDescription();
 	void setCost(float costs);
 	float getCost();
 };
@@ -259,9 +275,9 @@ private:
 	int vId;
 	int registrationNo;
 	float avgMileage;
-	char* LicenceType; // License required for driving the vehicle bool
+	char** LicenceType; // License required for driving the vehicle bool
 	bool status; // false for free, true if booked in a service already
-	char* fueltype;
+	char** fueltype;
 	float overallRanking;
 	Date manufacturingDate;
 	Feature* list;
@@ -270,23 +286,27 @@ private:
 	//you can add more members here if required
 	//add member functions
 public:
+	int registration_number, mileage, vehiclestatus, cost;
+	float ranking;
 	Vehicle();
-	Vehicle(int vehicleID, int registrationNumber, float avaerageMileage, char* licenseType,
-		bool statuses, char* fuelType, float overallRank, Date mfgDate,
+	Vehicle(int vehicleID, int registrationNumber, float avaerageMileage, char** licenseType,
+		bool statuses, char** fuelType, float overallRank, Date mfgDate,
 		Feature* lists, Service** serviceHist);
 	~Vehicle();
 	void setVehicleID(int vehicleID);
 	int getVehicleID();
+	void readvehicledata();
 	void setRegisterationNumber(int registerationNumber);
 	int getRegisterationNumber();
 	void setAverageMileage(float avaerageMileage);
 	float getavaerageMileage();
-	void setLicenseType(char* licenseType);
-	char getLicenseType();
+	void setLicenseType(char** licenseType);
+	char* getLicenseType();
+	void savetovehiclefile(int registration_number, int mileage, int vehiclestatus, float ranking, int cost);
 	void setStatus(bool statuses);
 	bool getStatus();
-	void setFuelType(char* fuelType);
-	char getFuelType();
+	void setFuelType(char** fuelType);
+	char* getFuelType();
 	void setOverallRank(float overallRank);
 	float getOverallRanks();
 	void setMfgDate(Date mfgDate);
@@ -296,6 +316,4 @@ public:
 	void setServiceHistory(Service** serviceHist);
 	Service getServiceHistory();
 };
-//add Complete Hierarchy of vehicles based on their types and functions
-
-
+//add Complete Hierarchy of vehicles based on their types and functions
